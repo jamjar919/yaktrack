@@ -1,18 +1,12 @@
-from lxml import html;
-import requests;
-a = None;
-import cookie
+import json;
+import subprocess;
+import cookie;
+theRequest = cookie.getCurlRequest(); 
 
-if cookie == None:
-    print("Error: Please place a valid cookie in cookie.py, cookie=\"yourcookie\"");
-    
+p = subprocess.Popen(theRequest, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+response = "";
+for line in p.stdout.readlines():
+    response = response + str(line);
+retval = p.wait();
 
-class YakTracker:
-    def getTopYaks(self):
-        return 0;
-
-page = requests.get("https://www.yikyak.com/nearby/hot", verify=False, cookies = cookie);
-tree = html.fromstring(page.content);
-#yaks = tree.xpath('//p[@class="message-text"]/text()');
-yaks = tree.xpath('//p[@class="sub-headline"]/text()');
-print(yaks);
+print(response);
