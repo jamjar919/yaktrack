@@ -2,13 +2,20 @@ import json;
 import subprocess;
 import math;
 import os;
-# You need a file curlreq that has a function getCurlRequest that returns the curl request to run.
-# Get the curl request by inspecting the network request from:
-#https://www.yikyak.com/api/proxy/v1/messages/all/hot?userLat=54.77525&userLong=-1.584852&lat=54.77525&long=-1.584852&myHerd=0 
-# Chrome will give you the curl option when you right click on the request, copy paste that into your function and add the 
-# -s flag so that curl runs silently (else you get a progress bar).
-# You also need to escape some "'s in the request
-import curlreq;
+# Download the exampleyakker.py file and fill in the fields to use the program. Then rename it yakker.py
+import yakker;
+
+def getCurlRequest(typ,lat,lon,yid=None):
+    if yid == None:
+        yid = yid.getDefaultYid();
+    cookie = yakker.getCookie(yid);
+    return "curl -s 'https://www.yikyak.com/api/proxy/v1/messages/all/"+typ+"?userLat="+lat+"&userLong="+lon+"&lat="+lat+"&long="+lon+"&myHerd=0' -H 'if-none-match: W/\"ee0f-AxVZDU3sErWZvluXofO/SQ\"' -H 'accept-encoding: gzip, deflate, sdch' -H 'accept-language: en-GB,en-US;q=0.8,en;q=0.6' -H 'user-agent: "+yakker.getUserAgent()+"' -H 'accept: application/json, text/plain, */*' -H 'referer: https://www.yikyak.com/nearby/hot' -H 'cookie: "+cookie+"' -H 'x-access-token: "+yid+"' --compressed";
+
+def getYid(yid=None):
+    if yid == None:
+        yid = yakker.getDefaultYid();
+    response = getServerResponse("curl -s 'https://www.yikyak.com/api/auth/token/refresh' -X POST -H 'origin: https://www.yikyak.com' -H 'accept-encoding: gzip, deflate' -H 'accept-language: en-GB,en-US;q=0.8,en;q=0.6' -H 'user-agent: "+yakker.getUserAgent()+"' -H 'accept: application/json, text/plain, */*' -H 'referer: https://www.yikyak.com/nearby/new' -H 'cookie: "+yakker.getCookie(yid)+"' -H 'x-access-token: "+yid+"' -H 'content-length: 0' --compressed");
+    return response[3:len(response)-2];
 
 def getServerResponse(theRequest):
     # call curl request
@@ -42,16 +49,17 @@ def parseYakJson(response):
         newData.append(json.loads(data));
     return(newData);
 
-def getHotYaks():
-    theRequest = curlreq.getCurlRequest('hot','54.77525','-1.584852'); 
+def getHotYaks(yid):
+    theRequest = getCurlRequest('hot','54.77525','-1.584852',yid); 
     response = getServerResponse(theRequest);
     return parseYakJson(response);
 
-def getNewYaks():
-    theRequest = curlreq.getCurlRequest('new','54.77525','-1.584852'); 
+def getNewYaks(yid):
+    theRequest = getCurlRequest('new','54.77525','-1.584852',yid); 
     response = getServerResponse(theRequest);
     return parseYakJson(response);
 
-yaks = getNewYaks()
+yaks = getHotYaks(getYid(None))
 for yak in yaks:
     print(yak["message"].ljust(200),str(math.floor(float(yak["score"]))).ljust(0));
+
