@@ -59,7 +59,9 @@ def getNewYaks(yid):
     response = getServerResponse(theRequest);
     return parseYakJson(response);
 
-yaks = getHotYaks(getYid(None))
-for yak in yaks:
-    print(yak["message"].ljust(200),str(math.floor(float(yak["score"]))).ljust(0));
-
+#yaks = getHotYaks(getYid(None))
+#for yak in yaks:
+#    if (yak["type"] != 0):
+#        print(str(yak["message"]+" [image]").ljust(200),str(math.floor(float(yak["score"]))).ljust(0));
+#    else:
+#        print(yak["message"].ljust(200),str(math.floor(float(yak["score"]))).ljust(0));
