@@ -20,11 +20,14 @@ def printYaks(yaks,yakwindow):
         currentLine += 1;
         i += 1;
         yakwindow.refresh();
+    printYakarma(yakwindow);
+    yakwindow.refresh();
 
 def printYakarma(yakwindow):
     sz = os.get_terminal_size();
     yakarma = yt.getYakarma(yt.getYid(None));
     yakwindow.addstr(0,sz.columns-2-len("YK: "+str(yakarma)),"YK: "+str(yakarma));
+    yakwindow.refresh();
 
 sz = os.get_terminal_size();
 screen = curses.initscr();
@@ -32,6 +35,7 @@ curses.noecho();
 curses.curs_set(0); 
 screen.keypad(1);
 yakwindow = curses.newwin(sz.lines-7,sz.columns-2,1,1);
+printYakarma(yakwindow);
 yakwindow.border(0);
 yakwindow.addstr(0,math.floor(sz.columns/2)-3,"Yaks");
 
@@ -41,7 +45,6 @@ bottomwin.addstr("Commands");
 bottomwin.addstr(1,1,"q - Quit");
 bottomwin.addstr(2,1,"h - Print Hot Yaks");
 bottomwin.addstr(3,1,"n - Print New Yaks");
-printYakarma(yakwindow);
 screen.refresh();
 yakwindow.refresh();
 bottomwin.refresh();

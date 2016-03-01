@@ -34,20 +34,11 @@ def parseYakJson(response):
     if response == 'b\'{"error":{"message":"Invalid access token"}}\'':
         raise RuntimeError("Cookie is probably invalid");
     #get rid of start and end weird bits
-    response = response[3:len(response)-2];
+    response = response[2:len(response)-1];
     # Fix escaped characters that otherwise break the json interpreter
     response = response.replace("\\\\\"",""); # \\"
-    response = response.replace("\\\'",""); # \'
     response = response.replace("\\",""); # \
-    jsonData = response.split("},{"); # Response is not properly formatted for some reason, seperate and parse individually.
-    newData = list();
-    for data in jsonData:
-        if data[0] != "{":
-            data = "{" + data;
-        if data[-1] != "}":
-            data = data + "}";
-        newData.append(json.loads(data));
-    return(newData);
+    return(json.loads(response));
 
 def getHotYaks(yid):
     theRequest = getCurlRequest('messages/all/hot','54.77525','-1.584852',yid); 
@@ -62,4 +53,4 @@ def getNewYaks(yid):
 def getYakarma(yid):
     theRequest = getCurlRequest('yakker/yakarma','54.77525','-1.584852',yid); 
     response = getServerResponse(theRequest);
-    return parseYakJson(response)[0]["yakarma"];
+    return parseYakJson(response)["yakarma"];
