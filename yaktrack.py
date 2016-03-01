@@ -9,7 +9,7 @@ def getCurlRequest(typ,lat,lon,yid=None):
     if yid == None:
         yid = yid.getDefaultYid();
     cookie = yakker.getCookie(yid);
-    return "curl -s 'https://www.yikyak.com/api/proxy/v1/messages/all/"+typ+"?userLat="+lat+"&userLong="+lon+"&lat="+lat+"&long="+lon+"&myHerd=0' -H 'if-none-match: W/\"ee0f-AxVZDU3sErWZvluXofO/SQ\"' -H 'accept-encoding: gzip, deflate, sdch' -H 'accept-language: en-GB,en-US;q=0.8,en;q=0.6' -H 'user-agent: "+yakker.getUserAgent()+"' -H 'accept: application/json, text/plain, */*' -H 'referer: https://www.yikyak.com/nearby/hot' -H 'cookie: "+cookie+"' -H 'x-access-token: "+yid+"' --compressed";
+    return "curl -s 'https://www.yikyak.com/api/proxy/v1/"+typ+"?userLat="+lat+"&userLong="+lon+"&lat="+lat+"&long="+lon+"&myHerd=0' -H 'if-none-match: W/\"ee0f-AxVZDU3sErWZvluXofO/SQ\"' -H 'accept-encoding: gzip, deflate, sdch' -H 'accept-language: en-GB,en-US;q=0.8,en;q=0.6' -H 'user-agent: "+yakker.getUserAgent()+"' -H 'accept: application/json, text/plain, */*' -H 'referer: https://www.yikyak.com/nearby/hot' -H 'cookie: "+cookie+"' -H 'x-access-token: "+yid+"' --compressed";
 
 def getYid(yid=None):
     if yid == None:
@@ -50,11 +50,16 @@ def parseYakJson(response):
     return(newData);
 
 def getHotYaks(yid):
-    theRequest = getCurlRequest('hot','54.77525','-1.584852',yid); 
+    theRequest = getCurlRequest('messages/all/hot','54.77525','-1.584852',yid); 
     response = getServerResponse(theRequest);
     return parseYakJson(response);
 
 def getNewYaks(yid):
-    theRequest = getCurlRequest('new','54.77525','-1.584852',yid); 
+    theRequest = getCurlRequest('messages/all/new','54.77525','-1.584852',yid); 
     response = getServerResponse(theRequest);
     return parseYakJson(response);
+
+def getYakarma(yid):
+    theRequest = getCurlRequest('yakker/yakarma','54.77525','-1.584852',yid); 
+    response = getServerResponse(theRequest);
+    return parseYakJson(response)[0]["yakarma"];
