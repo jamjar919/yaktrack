@@ -10,24 +10,30 @@ def printYaks(yaks,yakwindow):
     yakwindow.addstr(0,math.floor(sz.columns/2)-3,"Yaks");
     currentLine = 1;
     i = 0;
+    yakSpace = sz.columns-11;
     while (i < len(yaks)) and (currentLine < sz.lines-9):
+        yakLines = list();
         yak = yaks[i];
         if (yak["type"] != 0):
-            yakwindow.addstr(currentLine,2,str(yak["message"]+" [image]"));
-        else:
-            yakwindow.addstr(currentLine,2,yak["message"]);
+            yak["message"] = yak["message"]+ " [image]";
+        n = 0;
+        while (n < len(yak["message"])):
+            if (n+yakSpace < len(yak["message"])):
+                yakLines.append(yak["message"][n:n+yakSpace]);
+            else:
+                yakLines.append(yak["message"][n:len(yak["message"])]);
+            n += yakSpace;
         yakwindow.addstr(currentLine,sz.columns-7,str(math.floor(float(yak["score"]))));
-        currentLine += 1;
+        for messageLine in yakLines:
+            yakwindow.addstr(currentLine,2,messageLine);
+            currentLine += 1;
         i += 1;
-        yakwindow.refresh();
     printYakarma(yakwindow);
-    yakwindow.refresh();
 
 def printYakarma(yakwindow):
     sz = os.get_terminal_size();
     yakarma = yt.getYakarma(yt.getYid(None));
     yakwindow.addstr(0,sz.columns-2-len("YK: "+str(yakarma)),"YK: "+str(yakarma));
-    yakwindow.refresh();
 
 sz = os.get_terminal_size();
 screen = curses.initscr();
@@ -45,11 +51,13 @@ bottomwin.addstr("Commands");
 bottomwin.addstr(1,1,"q - Quit");
 bottomwin.addstr(2,1,"h - Print Hot Yaks");
 bottomwin.addstr(3,1,"n - Print New Yaks");
+yaks = yt.getNewYaks(yt.getYid(None));
+printYaks(yaks,yakwindow);
 screen.refresh();
 yakwindow.refresh();
 bottomwin.refresh();
-event = "n";
 while True: 
+    event = screen.getch() 
     if event == ord("q"): break;
     elif event == ord("h"):
         yaks = yt.getHotYaks(yt.getYid(None));
@@ -58,7 +66,7 @@ while True:
         yaks = yt.getNewYaks(yt.getYid(None));
         printYaks(yaks,yakwindow);
     printYakarma(yakwindow);
-    event = screen.getch() 
+    yakwindow.refresh();
     
 curses.nocbreak();
 screen.keypad(0);
