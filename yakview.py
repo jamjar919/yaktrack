@@ -32,7 +32,7 @@ def printYaks(yaks,yakwindow):
 
 def printYakarma(yakwindow):
     sz = os.get_terminal_size();
-    yakarma = yt.getYakarma(yt.getYid(None));
+    yakarma = yt.getYakarma();
     yakwindow.addstr(0,sz.columns-2-len("YK: "+str(yakarma)),"YK: "+str(yakarma));
 
 sz = os.get_terminal_size();
@@ -51,7 +51,7 @@ bottomwin.addstr("Commands");
 bottomwin.addstr(1,1,"q - Quit");
 bottomwin.addstr(2,1,"h - Print Hot Yaks");
 bottomwin.addstr(3,1,"n - Print New Yaks");
-yaks = yt.getNewYaks(yt.getYid(None));
+yaks = yt.getNewYaks();
 printYaks(yaks,yakwindow);
 screen.refresh();
 yakwindow.refresh();
@@ -60,10 +60,10 @@ while True:
     event = screen.getch() 
     if event == ord("q"): break;
     elif event == ord("h"):
-        yaks = yt.getHotYaks(yt.getYid(None));
+        yaks = yt.getHotYaks();
         printYaks(yaks,yakwindow);
     elif event == ord("n"):
-        yaks = yt.getNewYaks(yt.getYid(None));
+        yaks = yt.getNewYaks();
         printYaks(yaks,yakwindow);
     printYakarma(yakwindow);
     yakwindow.refresh();
